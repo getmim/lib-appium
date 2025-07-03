@@ -145,8 +145,9 @@ $appium->mobile->shell([
 18. `scrollTo(string $using, $value)`
 19. `shell(array $args): ?string`
 20. `sms(): Sms`
-21. `time(): string`
-22. `url(): Url`
+21. `source(): ?string`
+22. `time(): string`
+23. `url(): Url`
 
 ### LibAppium\Library\Object\Sms
 

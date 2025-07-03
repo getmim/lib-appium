@@ -152,6 +152,11 @@ class Session
         return new Sms($this);
     }
 
+    public function source(): ?string
+    {
+        return $this->exec('GET', '/source');
+    }
+
     public function time(): string
     {
         return $this->exec('POST', '/execute', [
