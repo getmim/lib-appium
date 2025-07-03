@@ -25,6 +25,11 @@ class App
         ]);
     }
 
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
     public function getPermissions(string $type = null): array
     {
         $types = [
