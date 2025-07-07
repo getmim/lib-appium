@@ -60,6 +60,17 @@ class Session
         ]);
     }
 
+    public function clearRecent(): void
+    {
+        $this->home();
+        $this->exec('POST', '/appium/device/press_keycode', [
+            'keycode' => 187
+        ]);
+
+        $el = $this->element('id', 'com.android.launcher:id/btn_clear');
+        $el->click();
+    }
+
     public function context(): Context
     {
         return new Context($this);
@@ -78,14 +89,20 @@ class Session
         ]);
     }
 
-    public function element(string $using, string $value): ?Element
-    {
-        return Element::findOne($this, $using, $value);
+    public function element(
+        string $using,
+        string $value,
+        bool $wait = false
+    ): ?Element {
+        return Element::findOne($this, $using, $value, $wait);
     }
 
-    public function elements(string $using, string $value): array
-    {
-        return Element::findAll($this, $using, $value);
+    public function elements(
+        string $using,
+        string $value,
+        bool $wait = false
+    ): array {
+        return Element::findAll($this, $using, $value, $wait);
     }
 
     public function home(): void
@@ -129,17 +146,24 @@ class Session
         return $this->execute('mobile: screenshots');
     }
 
-    public function scrollTo(string $using, $value)
+    public function screenSize(): object
     {
-        $el = $this->element($using, $value);
-
-        $this->exec('POST', '/execute', [
-            'script' => 'mobile: scroll',
-            'args' => [
-                'strategy' => $using,
-                'selector' => $value
-            ]
+        $result = $this->shell([
+            'command' => 'wm',
+            'args' => ['size']
         ]);
+
+        preg_match('!([0-9]+)x([0-9]+)!', $result, $match);
+
+        return (object)[
+            'width' => (int)$match[1],
+            'height' => (int)$match[2]
+        ];
+    }
+
+    public function scroll(): Scroll
+    {
+        return new Scroll($this);
     }
 
     public function shell(array $args): ?string

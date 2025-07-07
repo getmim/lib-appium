@@ -59,6 +59,7 @@ $appium->mobile->shell([
 2. `getCurrent(): ?string`
 3. `getPackage(): ?string`
 4. `start(array $args): void`
+5. `waitFor(): bool`
 
 ### LibAppium\Library\Object\App
 
@@ -100,8 +101,8 @@ $appium->mobile->shell([
 11. `search(): void`
 12. `send(): void`
 13. `type(string $text): void`
-14. `static findOne(Session $session, string $using, string $value, int $retry = 0): ?Element`
-15. `static findAll( Session $session, string $using, string $value, int $retry = 0): array`
+14. `static findOne(Session $session, string $using, string $value, $wait = false, int $retry = 10): ?Element`
+15. `static findAll( Session $session, string $using, string $value, $wait = false, int $retry = 10): array`
 
 ### LibAppium\Library\Object\Interaction
 
@@ -124,6 +125,13 @@ $appium->mobile->shell([
 2. `getAll(): array`
 3. `open(): void`
 
+### LibAppium\Library\Object\Scroll
+
+1. `__construct(Session $session)`
+2. `down(): void`
+3. `to(string $using, $value): void`
+4. `up(): void`
+
 ### LibAppium\Library\Object\Session
 
 1. `__construct()`
@@ -132,28 +140,31 @@ $appium->mobile->shell([
 4. `activity(): Activity`
 5. `battery(): object`
 6. `context(): Context`
-7. `clipboard(): Clipboard`
-8. `device(): ?object`
-9. `element(string $using, string $value): ?Element`
-10. `elements(string $using, string $value): array`
-11. `home(): void`
-12. `interaction(): Interaction`
-13. `keyboard(): Keyboard`
-14. `notification(): Notification`
-15. `exec(string $method, string $path, array $body = [])`
-16. `execute(string $script, array $args = [])`
-17. `screenshot(): object`
-18. `scrollTo(string $using, $value)`
-19. `shell(array $args): ?string`
-20. `sms(): Sms`
-21. `source(): ?string`
-22. `time(): string`
-23. `url(): Url`
+7. `clearRecent(): void`
+8. `clipboard(): Clipboard`
+9. `device(): ?object`
+10. `element(string $using, string $value, bool $wait = false): ?Element`
+11. `elements(string $using, string $value, bool $wait = false): array`
+12. `home(): void`
+13. `interaction(): Interaction`
+14. `keyboard(): Keyboard`
+15. `notification(): Notification`
+16. `exec(string $method, string $path, array $body = [])`
+17. `execute(string $script, array $args = [])`
+18. `screenshot(): object`
+19. `screenSize(): object`
+20. `scroll(): void`
+21. `shell(array $args): ?string`
+22. `sms(): Sms`
+23. `source(): ?string`
+24. `time(): string`
+25. `url(): Url`
 
 ### LibAppium\Library\Object\Sms
 
 1. `__construct(Session $session)`
 2. `getAll(): array`
+3. `getLast(): ?object`
 
 ### LibAppium\Library\Object\Url
 

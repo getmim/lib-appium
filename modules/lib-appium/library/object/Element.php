@@ -43,7 +43,17 @@ class Element
         }
         $uri .=  $name;
 
-        return $this->session->exec('GET', $uri);
+        $result = $this->session->exec('GET', $uri);
+
+        $bools = [
+            'checked'
+        ];
+
+        if (in_array($name, $bools)) {
+            return $result == 'true';
+        }
+
+        return $result;
     }
 
     public function __set(string $name, $value): void
@@ -80,6 +90,10 @@ class Element
         ]);
 
         if (!$els) {
+            return [];
+        }
+
+        if (isset($els->error)) {
             return [];
         }
 
@@ -142,7 +156,8 @@ class Element
         Session $session,
         string $using,
         string $value,
-        int $retry = 0
+        bool $wait = false,
+        int $retry = 10
     ): ?Element {
         $el = $session->exec('POST', '/element', [
             'using' => $using,
@@ -150,12 +165,12 @@ class Element
         ]);
 
         if (isset($el->error)) {
-            if ($retry >= 10) {
+            if (!$wait || !$retry) {
                 return null;
             }
 
             sleep(1);
-            return self::findOne($session, $using, $value, ++$retry);
+            return self::findOne($session, $using, $value, $wait, --$retry);
         }
 
         return new Element($el, $session);
@@ -165,20 +180,21 @@ class Element
         Session $session,
         string $using,
         string $value,
-        int $retry = 0
+        bool $wait = false,
+        int $retry = 10
     ): array {
         $els = $session->exec('POST', '/elements', [
             'using' => $using,
             'value' => $value
         ]);
 
-        if (!$els) {
-            if ($retry >= 10) {
+        if (!$els || isset($els->error)) {
+            if (!$wait || !$retry) {
                 return [];
             }
 
             sleep(1);
-            return self::findAll($session, $using, $value, ++$retry);
+            return self::findAll($session, $using, $value, $wait, --$retry);
         }
 
         $res = [];

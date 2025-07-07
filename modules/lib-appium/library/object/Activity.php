@@ -30,4 +30,17 @@ class Activity
     {
         $this->session->exec('POST', '/appium/device/start_activity', $args);
     }
+
+    public function waitFor(string $name): bool
+    {
+        for ($i=0; $i<15; $i++) {
+            if ($this->getCurrent() == $name) {
+                return true;
+            }
+
+            sleep(1);
+        }
+
+        return false;
+    }
 }

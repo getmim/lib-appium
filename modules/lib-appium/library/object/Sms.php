@@ -19,7 +19,16 @@ class Sms
     public function getAll(): array
     {
         $res = $this->session->execute('mobile: listSms', []);
-        deb($res);
         return $res->statusBarNotifications ?? [];
+    }
+
+    public function getLast(): ?object
+    {
+        $res = $this->getAll();
+        if (!$res) {
+            return null;
+        }
+
+        return $res[0];
     }
 }
