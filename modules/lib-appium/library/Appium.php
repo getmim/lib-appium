@@ -12,6 +12,8 @@ use LibAppium\Library\Object\Session;
 
 class Appium
 {
+    protected static $session;
+
     public static function exec(string $method, string $path, array $body = [])
     {
         $config = &\Mim::$app->config->libAppium;
@@ -31,11 +33,19 @@ class Appium
             return;
         }
 
-        return $res->value;
+        $value = $res->value;
+        if (isset($value->error)) {
+            if ($value->error == 'unknown error') {
+                self::$session->refresh();
+            }
+        }
+
+        return $value;
     }
 
     public static function createSession(): Session
     {
-        return new Session();
+        self::$session = new Session();
+        return self::$session;
     }
 }

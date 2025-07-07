@@ -145,20 +145,21 @@ $appium->mobile->shell([
 9. `device(): ?object`
 10. `element(string $using, string $value, bool $wait = false): ?Element`
 11. `elements(string $using, string $value, bool $wait = false): array`
-12. `home(): void`
-13. `interaction(): Interaction`
-14. `keyboard(): Keyboard`
-15. `notification(): Notification`
-16. `exec(string $method, string $path, array $body = [])`
-17. `execute(string $script, array $args = [])`
-18. `screenshot(): object`
-19. `screenSize(): object`
-20. `scroll(): void`
-21. `shell(array $args): ?string`
-22. `sms(): Sms`
-23. `source(): ?string`
-24. `time(): string`
-25. `url(): Url`
+12. `refresh(): void`
+13. `home(): void`
+14. `interaction(): Interaction`
+15. `keyboard(): Keyboard`
+16. `notification(): Notification`
+17. `exec(string $method, string $path, array $body = [])`
+18. `execute(string $script, array $args = [])`
+19. `screenshot(): object`
+20. `screenSize(): object`
+21. `scroll(): void`
+22. `shell(array $args): ?string`
+23. `sms(): Sms`
+24. `source(): ?string`
+25. `time(): string`
+26. `url(): Url`
 
 ### LibAppium\Library\Object\Sms
 

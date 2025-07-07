@@ -141,6 +141,11 @@ class Session
         ]);
     }
 
+    public function refresh(): void
+    {
+        $this->createSession();
+    }
+
     public function screenshot(): object
     {
         return $this->execute('mobile: screenshots');
