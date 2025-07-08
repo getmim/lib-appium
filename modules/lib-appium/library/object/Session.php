@@ -27,6 +27,12 @@ class Session
 
         $res = Appium::exec('POST', '/session', $body);
 
+        if (!$res) {
+            sleep(1);
+            $this->createSession();
+            return;
+        }
+
         $this->session = $res;
     }
 
@@ -183,7 +189,8 @@ class Session
 
     public function source(): ?string
     {
-        return $this->exec('GET', '/source');
+        $result = $this->exec('GET', '/source');
+        return is_string($result) ? $result : null;
     }
 
     public function time(): string

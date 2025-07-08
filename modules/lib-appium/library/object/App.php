@@ -18,6 +18,20 @@ class App
         $this->session = $session;
     }
 
+    public function backTo(string $activity)
+    {
+        $act = $this->session->activity();
+        $last_act = null;
+        while (true) {
+            $curr_act = $act->getCurrent();
+            if ($activity == $curr_act) {
+                break;
+            }
+
+            $this->session->back();
+        }
+    }
+
     public function background(int $seconds)
     {
         $this->session->exec('POST', '/appium/app/background', [
@@ -94,6 +108,15 @@ class App
             'appPackage' => $this->id,
             'action' => $type,
             'target' => 'pm'
+        ]);
+    }
+
+    public function start(string $activity): void
+    {
+        $act = $this->session->activity();
+        $act->start([
+            'appPackage' => $this->id,
+            'appActivity' => $activity
         ]);
     }
 

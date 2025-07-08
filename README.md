@@ -64,15 +64,17 @@ $appium->mobile->shell([
 ### LibAppium\Library\Object\App
 
 1. `__construct(string $id, Session $session)`
-2. `background(int $seconds)`
-3. `getId(): string`
-4. `getPermissions(string $type = null): array`
-5. `close(): void`
-6. `isInstalled(): bool`
-7. `open(): void`
-8. `remove(): void`
-9. `setPermission(string $name, string $type): void`
-10. `state(): int`
+2. `backTo(string $activity): void`
+3. `background(int $seconds)`
+4. `getId(): string`
+5. `getPermissions(string $type = null): array`
+6. `close(): void`
+7. `isInstalled(): bool`
+8. `open(): void`
+9. `remove(): void`
+10. `setPermission(string $name, string $type): void`
+11. `start(string $activity): void`
+12. `state(): int`
 
 ### LibAppium\Library\Object\Clipboard
 
