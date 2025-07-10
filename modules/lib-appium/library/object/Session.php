@@ -73,8 +73,18 @@ class Session
             'keycode' => 187
         ]);
 
-        $el = $this->element('id', 'com.android.launcher:id/btn_clear');
-        $el->click();
+        $sels = [
+            ['id', 'com.android.launcher:id/btn_clear'],
+            ['id', 'com.android.launcher3:id/action_clean']
+        ];
+
+        foreach ($sels as $sel) {
+            $el = $this->element($sel[0], $sel[1]);
+            if ($el) {
+                $el->click();
+                break;
+            }
+        }
     }
 
     public function context(): Context
