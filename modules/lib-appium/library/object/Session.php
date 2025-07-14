@@ -121,6 +121,12 @@ class Session
         return Element::findAll($this, $using, $value, $wait);
     }
 
+    public function gesture(string $gesture, array $options): void
+    {
+        $name = 'mobile: ' . $gesture . 'Gesture';
+        $this->execute($name, $options);
+    }
+
     public function home(): void
     {
         $this->exec('POST', '/appium/device/press_keycode', [

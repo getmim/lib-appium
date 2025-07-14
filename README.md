@@ -100,11 +100,12 @@ $appium->mobile->shell([
 8. `editor(string $action): void`
 9. `go(): void`
 10. `next(): void`
-11. `search(): void`
-12. `send(): void`
-13. `type(string $text): void`
-14. `static findOne(Session $session, string $using, string $value, $wait = false, int $retry = 10): ?Element`
-15. `static findAll( Session $session, string $using, string $value, $wait = false, int $retry = 10): array`
+11. `screenshot(): string`
+12. `search(): void`
+13. `send(): void`
+14. `type(string $text): void`
+15. `static findOne(Session $session, string $using, string $value, $wait = false, int $retry = 10): ?Element`
+16. `static findAll( Session $session, string $using, string $value, $wait = false, int $retry = 10): array`
 
 ### LibAppium\Library\Object\Interaction
 
@@ -148,20 +149,21 @@ $appium->mobile->shell([
 10. `element(string $using, string $value, bool $wait = false): ?Element`
 11. `elements(string $using, string $value, bool $wait = false): array`
 12. `refresh(): void`
-13. `home(): void`
-14. `interaction(): Interaction`
-15. `keyboard(): Keyboard`
-16. `notification(): Notification`
-17. `exec(string $method, string $path, array $body = [])`
-18. `execute(string $script, array $args = [])`
-19. `screenshot(): object`
-20. `screenSize(): object`
-21. `scroll(): void`
-22. `shell(array $args): ?string`
-23. `sms(): Sms`
-24. `source(): ?string`
-25. `time(): string`
-26. `url(): Url`
+13. `gesture(string $gesture, array $options): void`
+14. `home(): void`
+15. `interaction(): Interaction`
+16. `keyboard(): Keyboard`
+17. `notification(): Notification`
+18. `exec(string $method, string $path, array $body = [])`
+19. `execute(string $script, array $args = [])`
+20. `screenshot(): object`
+21. `screenSize(): object`
+22. `scroll(): void`
+23. `shell(array $args): ?string`
+24. `sms(): Sms`
+25. `source(): ?string`
+26. `time(): string`
+27. `url(): Url`
 
 ### LibAppium\Library\Object\Sms
 

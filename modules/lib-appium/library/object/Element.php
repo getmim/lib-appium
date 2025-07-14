@@ -134,6 +134,12 @@ class Element
         $this->editor('next');
     }
 
+    public function screenshot(): ?string
+    {
+        $uri = '/element/' . $this->id . '/screenshot';
+        return $this->session->exec('GET', $uri);
+    }
+
     public function search(): void
     {
         $this->editor('search');
