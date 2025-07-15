@@ -101,11 +101,12 @@ $appium->mobile->shell([
 9. `go(): void`
 10. `next(): void`
 11. `screenshot(): string`
-12. `search(): void`
-13. `send(): void`
-14. `type(string $text): void`
-15. `static findOne(Session $session, string $using, string $value, $wait = false, int $retry = 10): ?Element`
-16. `static findAll( Session $session, string $using, string $value, $wait = false, int $retry = 10): array`
+12. `scroll(string $target, int $distance): void`
+13. `search(): void`
+14. `send(): void`
+15. `type(string $text): void`
+16. `static findOne(Session $session, string $using, string $value, $wait = false, int $retry = 10): ?Element`
+17. `static findAll( Session $session, string $using, string $value, $wait = false, int $retry = 10): array`
 
 ### LibAppium\Library\Object\Interaction
 

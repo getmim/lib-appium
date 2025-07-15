@@ -78,6 +78,10 @@ class Element
             return null;
         }
 
+        if ($this->id == $el->ELEMENT) {
+            return null;
+        }
+
         return new Element($el, $this->session);
     }
 
@@ -99,6 +103,9 @@ class Element
 
         $res = [];
         foreach ($els as $el) {
+            if ($el->ELEMENT == $this->id) {
+                continue;
+            }
             $res[] = new Element($el, $this->session);
         }
 
@@ -132,6 +139,20 @@ class Element
     public function next(): void
     {
         $this->editor('next');
+    }
+
+    public function scroll(string $target, int $distance): void
+    {
+        $rect = $this->rect;
+
+        $this->session->execute('mobile: scrollGesture', [
+            'left' => $rect->x,
+            'top' => $rect->y,
+            'width' => $rect->width,
+            'height' => $rect->height,
+            'direction' => $target,
+            'percent' => round($distance / $rect->height)
+        ]);
     }
 
     public function screenshot(): ?string
