@@ -141,18 +141,28 @@ class Element
         $this->editor('next');
     }
 
-    public function scroll(string $target, int $distance): void
+    public function scroll(string $target, int $distance, int $offset = 0): void
     {
         $rect = $this->rect;
 
-        $this->session->execute('mobile: scrollGesture', [
+        $opts = [
             'left' => $rect->x,
             'top' => $rect->y,
             'width' => $rect->width,
             'height' => $rect->height,
             'direction' => $target,
             'percent' => round($distance / $rect->height)
-        ]);
+        ];
+
+        if ($offset) {
+            if ($target == 'down') {
+                $opts['height'] = $opts['height'] - $offset;
+            } else {
+                $opts['y'] = $opts['y'] + $offset;
+            }
+        }
+
+        $this->session->execute('mobile: scrollGesture', $opts);
     }
 
     public function screenshot(): ?string

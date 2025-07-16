@@ -101,7 +101,7 @@ $appium->mobile->shell([
 9. `go(): void`
 10. `next(): void`
 11. `screenshot(): string`
-12. `scroll(string $target, int $distance): void`
+12. `scroll(string $target, int $distance, int $offset = 0): void`
 13. `search(): void`
 14. `send(): void`
 15. `type(string $text): void`
