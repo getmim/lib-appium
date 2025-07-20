@@ -43,9 +43,9 @@ class Appium
         return $value;
     }
 
-    public static function createSession(): Session
+    public static function createSession(string $udid = null): Session
     {
-        self::$session = new Session();
+        self::$session = new Session($udid);
         return self::$session;
     }
 }

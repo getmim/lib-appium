@@ -51,7 +51,7 @@ $appium->mobile->shell([
 ### LibAppium\Library\Appium
 
 1. `exec(string $method, string $path, array $body = [])`
-2. `createSession(): Session`
+2. `createSession(string $udid = null): Session`
 
 ### LibAppium\Library\Object\Activity
 
@@ -138,7 +138,7 @@ $appium->mobile->shell([
 
 ### LibAppium\Library\Object\Session
 
-1. `__construct()`
+1. `__construct(string $udid = null)`
 2. `app(string $id): App`
 3. `back(): void`
 4. `activity(): Activity`

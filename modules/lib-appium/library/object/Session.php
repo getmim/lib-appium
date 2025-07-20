@@ -12,6 +12,7 @@ use LibAppium\Library\Appium;
 class Session
 {
     protected object $session;
+    protected ?string $udid;
 
     protected function createSession(): void
     {
@@ -24,6 +25,9 @@ class Session
                 ]
             ]
         ];
+        if ($this->udid) {
+            $body['capabilities']['alwaysMatch']['appium:udid'] = $this->udid;
+        }
 
         $res = Appium::exec('POST', '/session', $body);
 
@@ -36,8 +40,9 @@ class Session
         $this->session = $res;
     }
 
-    public function __construct()
+    public function __construct(string $udid = null)
     {
+        $this->udid = $udid;
         $this->createSession();
     }
 
