@@ -150,17 +150,18 @@ class Element
             'top' => $rect->y,
             'width' => $rect->width,
             'height' => $rect->height,
-            'direction' => $target,
-            'percent' => round($distance / $rect->height)
+            'direction' => $target
         ];
 
         if ($offset) {
-            if ($target == 'down') {
-                $opts['height'] = $opts['height'] - $offset;
-            } else {
-                $opts['y'] = $opts['y'] + $offset;
+            $opts['height'] = $opts['height'] - $offset;
+
+            if ($target == 'up') {
+                $opts['top'] = $opts['top'] + $offset;
             }
         }
+
+        $opts['percent'] = round($distance / $opts['height']);
 
         $this->session->execute('mobile: scrollGesture', $opts);
     }

@@ -36,7 +36,11 @@ class Appium
         $value = $res->value;
         if (isset($value->error)) {
             if ($value->error == 'unknown error') {
-                self::$session->refresh();
+                if (self::$session) {
+                    self::$session->refresh();
+                } else {
+                    throw new \Exception($value->message);
+                }
             }
         }
 
