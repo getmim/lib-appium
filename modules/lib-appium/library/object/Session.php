@@ -2,7 +2,7 @@
 /**
  * Session
  * @package lib-appium
- * @version 0.0.1
+ * @version 1.10.0
  */
 
 namespace LibAppium\Library\Object;
@@ -13,6 +13,7 @@ class Session
 {
     protected object $session;
     protected ?string $udid;
+    protected ?string $port;
 
     protected function createSession(): void
     {
@@ -28,6 +29,9 @@ class Session
         if ($this->udid) {
             $body['capabilities']['alwaysMatch']['appium:udid'] = $this->udid;
         }
+        if ($this->port) {
+            $body['capabilities']['alwaysMatch']['appium:systemPort'] = $this->port;
+        }
 
         $res = Appium::exec('POST', '/session', $body);
 
@@ -40,9 +44,10 @@ class Session
         $this->session = $res;
     }
 
-    public function __construct(string $udid = null)
+    public function __construct(string $udid = null, string $port = null)
     {
         $this->udid = $udid;
+        $this->port = $port;
         $this->createSession();
     }
 
