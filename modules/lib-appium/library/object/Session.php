@@ -2,7 +2,7 @@
 /**
  * Session
  * @package lib-appium
- * @version 1.10.0
+ * @version 1.11.0
  */
 
 namespace LibAppium\Library\Object;
@@ -14,9 +14,14 @@ class Session
     protected object $session;
     protected ?string $udid;
     protected ?string $port;
+    protected int $retry = 0;
 
     protected function createSession(): void
     {
+        if ($this->retry > 5) {
+            throw new \Exception('Unable to retrieve appium session');
+        }
+
         $body = [
             'capabilities' => [
                 'alwaysMatch' => [
@@ -36,6 +41,7 @@ class Session
         $res = Appium::exec('POST', '/session', $body);
 
         if (!$res) {
+            $this->retry++;
             sleep(1);
             $this->createSession();
             return;
