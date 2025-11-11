@@ -11,15 +11,35 @@ use LibAppium\Library\Appium;
 
 class Session
 {
-    protected object $session;
+    protected ?object $session;
     protected ?string $udid;
     protected ?string $port;
     protected int $retry = 0;
 
-    protected function createSession(): void
+    protected function createSession(bool $force = false): void
     {
+        $this->session = null;
         if ($this->retry > 5) {
             throw new \Exception('Unable to retrieve appium session');
+        }
+
+        // get from local temporary file
+        $key = '';
+        if ($this->udid) {
+            $key .= $this->udid;
+        }
+        if ($this->port) {
+            $key .= $this->port;
+        }
+        $key = 'appium-' . md5($key);
+        $cache_file = chop(sys_get_temp_dir(), '/') . '/' . $key;
+        if (!$force) {
+            if (is_file($cache_file)) {
+                $content = file_get_contents($cache_file);
+                $content = json_decode($content);
+                $this->session = $content;
+                return;
+            }
         }
 
         $body = [
@@ -27,7 +47,14 @@ class Session
                 'alwaysMatch' => [
                     'platformName' => 'Android',
                     'appium:automationName' => 'UiAutomator2',
-                    'appium:deviceName' => 'Android'
+                    'appium:deviceName' => 'Android',
+                    'appium:newCommandTimeout' => 5, // 60 * 60 * 1,
+                    'appium:disableWindowAnimation' => true,
+                    // 'appium:skipDeviceInitialization' => true,
+                    // 'appium:skipServerInstallation' => true,
+                    'appium:ignoreHiddenApiPolicyError' => true,
+                    'appium:hideKeyboard' => true,
+                    'appium:allowDelayAdb' => false
                 ]
             ]
         ];
@@ -40,14 +67,17 @@ class Session
 
         $res = Appium::exec('POST', '/session', $body);
 
-        if (!$res) {
+        if (!$res || isset($res->error)) {
             $this->retry++;
             sleep(1);
-            $this->createSession();
+            $this->createSession(true);
             return;
         }
 
         $this->session = $res;
+
+        $res = json_encode($res);
+        file_put_contents($cache_file, $res);
     }
 
     public function __construct(string $udid = null, string $port = null)
@@ -167,8 +197,19 @@ class Session
 
     public function exec(string $method, string $path, array $body = [])
     {
-        $path = '/session/' . $this->session->sessionId . $path;
-        return Appium::exec($method, $path, $body);
+        $spath = '/session/' . $this->session->sessionId . $path;
+        $result = Appium::exec($method, $spath, $body);
+
+        $reset = [
+            'unknown error',
+            'invalid session id'
+        ];
+        if (isset($result->error) && in_array($result->error, $reset)) {
+            $this->createSession(true);
+            return $this->exec($method, $path, $body);
+        }
+
+        return $result;
     }
 
     public function execute(string $script, array $args = [])
@@ -181,7 +222,7 @@ class Session
 
     public function refresh(): void
     {
-        $this->createSession();
+        $this->createSession(true);
     }
 
     public function screenshot(): object

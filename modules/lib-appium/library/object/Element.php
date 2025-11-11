@@ -182,6 +182,45 @@ class Element
         $this->editor('send');
     }
 
+    public function tap(): void
+    {
+        $rect = $this->rect;
+        $x = round(($rect->x + $rect->width) / 2);
+        $y = round(($rect->y + $rect->height) / 2);
+        $uri = '/actions';
+        $this->session->exec('POST', $uri, [
+            'actions' => [
+                [
+                    'type' => 'pointer',
+                    'id' => 'finger1',
+                    'parameters' => [
+                        'pointerType' => 'touch'
+                    ],
+                    'actions' => [
+                        [
+                            'type' => 'pointerMove',
+                            'duration' => 0,
+                            'x' => $rect->x - 10,
+                            'y' => $rect->y
+                        ],
+                        [
+                            'type' => 'pointerDown',
+                            'button' => 0
+                        ],
+                        [
+                            'type' => 'pause',
+                            'duration' => 100
+                        ],
+                        [
+                            'type' => 'pointerUp',
+                            'button' => 0
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+    }
+
     public function type(string $text): void
     {
         $uri = '/element/' . $this->id . '/value';
