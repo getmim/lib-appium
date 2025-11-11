@@ -48,7 +48,7 @@ class Session
                     'platformName' => 'Android',
                     'appium:automationName' => 'UiAutomator2',
                     'appium:deviceName' => 'Android',
-                    'appium:newCommandTimeout' => 5, // 60 * 60 * 1,
+                    'appium:newCommandTimeout' => 60 * 60 * 1,
                     'appium:disableWindowAnimation' => true,
                     // 'appium:skipDeviceInitialization' => true,
                     // 'appium:skipServerInstallation' => true,
