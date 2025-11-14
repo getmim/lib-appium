@@ -2,7 +2,7 @@
 /**
  * Appium
  * @package lib-appium
- * @version 0.0.1
+ * @version 1.12.0
  */
 
 namespace LibAppium\Library;
@@ -14,10 +14,13 @@ class Appium
 {
     protected static $session;
 
-    public static function exec(string $method, string $path, array $body = [])
-    {
-        $config = &\Mim::$app->config->libAppium;
-        $url = 'http://' . $config->host . ':' . $config->port . $path;
+    public static function exec(
+        string $method,
+        string $path,
+        array $body = [],
+        string $server = 'http://127.0.0.1:4723'
+    ) {
+        $url = $server . $path;
 
         $res = Curl::fetch([
             'url' => $url,
