@@ -36,7 +36,7 @@ class Scroll
 
     public function to(string $using, $value): void
     {
-        $this->session->exec('POST', '/execute', [
+        $this->session->exec('POST', '/execute/sync', [
             'script' => 'mobile: scroll',
             'args' => [
                 'strategy' => $using,
@@ -47,8 +47,8 @@ class Scroll
 
     public function up(): void
     {
-        $h_10 = $this->size->height * 10 / 100;
-        $w_10 = $this->size->width * 10 / 100;
+        $h_10 = $this->size->height * 20 / 100;
+        $w_10 = $this->size->width * 20 / 100;
 
         $this->session->execute('mobile: scrollGesture', [
             'left' => $w_10,

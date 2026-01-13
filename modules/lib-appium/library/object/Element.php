@@ -225,7 +225,7 @@ class Element
     {
         $uri = '/element/' . $this->id . '/value';
         $this->session->exec('POST', $uri, [
-            'value' => str_split($text)
+            'text' => str_split($text)
         ]);
     }
 

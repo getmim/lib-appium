@@ -50,8 +50,8 @@ $appium->mobile->shell([
 
 ### LibAppium\Library\Appium
 
-1. `exec(string $method, string $path, array $body = [])`
-2. `createSession(string $udid = null): Session`
+1. `exec(string $method, string $path, array $body = [], ?string $server = 'http://127.0.0.1:4723')`
+2. `createSession(array $options): Session`
 
 ### LibAppium\Library\Object\Activity
 

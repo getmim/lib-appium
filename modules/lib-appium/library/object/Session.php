@@ -8,13 +8,13 @@
 namespace LibAppium\Library\Object;
 
 use LibAppium\Library\Appium;
+use Cli\Library\Bash;
 
 class Session
 {
     protected ?object $session;
-    protected ?string $udid;
-    protected ?string $port;
     protected int $retry = 0;
+    protected array $options;
 
     protected function createSession(bool $force = false): void
     {
@@ -23,22 +23,20 @@ class Session
             throw new \Exception('Unable to retrieve appium session');
         }
 
-        // get from local temporary file
-        $key = '';
-        if ($this->udid) {
-            $key .= $this->udid;
-        }
-        if ($this->port) {
-            $key .= $this->port;
-        }
-        $key = 'appium-' . md5($key);
-        $cache_file = chop(sys_get_temp_dir(), '/') . '/' . $key;
-        if (!$force) {
-            if (is_file($cache_file)) {
-                $content = file_get_contents($cache_file);
-                $content = json_decode($content);
-                $this->session = $content;
+        $server = $this->options['appium_address'];
+
+        // Try get from exists session
+        $res = Appium::exec('GET', '/appium/sessions', [], $server);
+        if ($res) {
+            if (!$force) {
+                $this->session = (object)[
+                    'sessionId' => $res[0]->id
+                ];
                 return;
+            } else {
+                foreach ($res as $re) {
+                    Appium::exec('DELETE', '/session/' . $re->id, [], $server);
+                }
             }
         }
 
@@ -48,26 +46,32 @@ class Session
                     'platformName' => 'Android',
                     'appium:automationName' => 'UiAutomator2',
                     'appium:deviceName' => 'Android',
-                    'appium:newCommandTimeout' => 60 * 60 * 1,
+                    'appium:newCommandTimeout' => 0,
                     'appium:disableWindowAnimation' => true,
                     // 'appium:skipDeviceInitialization' => true,
                     // 'appium:skipServerInstallation' => true,
                     'appium:ignoreHiddenApiPolicyError' => true,
-                    'appium:hideKeyboard' => true,
-                    'appium:allowDelayAdb' => false
+                    // 'appium:hideKeyboard' => true,
+                    'appium:allowDelayAdb' => false,
+                    'appium:udid' => $this->options['android_id'],
+                    'appium:systemPort' => $this->options['system_port'],
+                    'appium:adbPort' => $this->options['adb_port'],
+                    'appium:dontStopAppOnReset' => true
                 ]
             ]
         ];
-        if ($this->udid) {
-            $body['capabilities']['alwaysMatch']['appium:udid'] = $this->udid;
-        }
-        if ($this->port) {
-            $body['capabilities']['alwaysMatch']['appium:systemPort'] = $this->port;
-        }
 
-        $res = Appium::exec('POST', '/session', $body);
+        $info = 'lib-appium[Session]: Create new session on ' . $server;
+        if ($this->retry > 0) {
+            $info .= ' (Retry ' . $this->retry . ')';
+        }
+        Bash::echo($info);
+        $res = Appium::exec('POST', '/session', $body, $server);
 
         if (!$res || isset($res->error)) {
+            // if (!is_null($res)) {
+            //     deb($res);
+            // }
             $this->retry++;
             sleep(1);
             $this->createSession(true);
@@ -75,15 +79,11 @@ class Session
         }
 
         $this->session = $res;
-
-        $res = json_encode($res);
-        file_put_contents($cache_file, $res);
     }
 
-    public function __construct(string $udid = null, string $port = null)
+    public function __construct(array $options)
     {
-        $this->udid = $udid;
-        $this->port = $port;
+        $this->options = $options;
         $this->createSession();
     }
 
@@ -106,7 +106,7 @@ class Session
 
     public function battery(): object
     {
-        return $this->exec('POST', '/execute', [
+        return $this->exec('POST', '/execute/sync', [
             'script' => 'mobile: batteryInfo',
             'args' => []
         ]);
@@ -145,7 +145,7 @@ class Session
 
     public function device(): ?object
     {
-        return $this->exec('POST', '/execute', [
+        return $this->exec('POST', '/execute/sync', [
             'script' => 'mobile: deviceInfo',
             'args' => []
         ]);
@@ -198,7 +198,8 @@ class Session
     public function exec(string $method, string $path, array $body = [])
     {
         $spath = '/session/' . $this->session->sessionId . $path;
-        $result = Appium::exec($method, $spath, $body);
+        $server = $this->options['appium_address'];
+        $result = Appium::exec($method, $spath, $body, $server);
 
         $reset = [
             'unknown error',
@@ -214,7 +215,7 @@ class Session
 
     public function execute(string $script, array $args = [])
     {
-        return $this->exec('POST', '/execute', [
+        return $this->exec('POST', '/execute/sync', [
             'script' => $script,
             'args' => $args
         ]);
@@ -225,9 +226,9 @@ class Session
         $this->createSession(true);
     }
 
-    public function screenshot(): object
+    public function screenshot(): string
     {
-        return $this->execute('mobile: screenshots');
+        return $this->exec('GET', '/screenshot');
     }
 
     public function screenSize(): object
@@ -268,7 +269,7 @@ class Session
 
     public function time(): string
     {
-        return $this->exec('POST', '/execute', [
+        return $this->exec('POST', '/execute/sync', [
             'script' => 'mobile: getDeviceTime',
             'args' => []
         ]);

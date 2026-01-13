@@ -2,7 +2,7 @@
 
 return [
     '__name' => 'lib-appium',
-    '__version' => '1.12.0',
+    '__version' => '2.0.0',
     '__git' => 'git@github.com:getmim/lib-appium.git',
     '__license' => 'MIT',
     '__author' => [
